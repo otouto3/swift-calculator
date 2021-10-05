@@ -24,6 +24,7 @@ class ViewController: UIViewController {
         ["1", "2", "3", "+"],
         ["0", ".", "="],
     ]
+    let cellId = "cellId"
 
     @IBOutlet weak var calculatorCollectionView: UICollectionView!
     @IBOutlet weak var numberLabel: UILabel!
@@ -31,14 +32,17 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViews()
+    }
+    
+    func setupViews() {
         
+        // storyboardでつけた名前
         calculatorCollectionView.delegate = self
         calculatorCollectionView.dataSource = self
-        calculatorCollectionView.register(CalculatorViewCell.self, forCellWithReuseIdentifier: "cellId")
-//        calculatorHeightConstraint.constant = view.frame.width * 1.4
+        calculatorCollectionView.register(CalculatorViewCell.self, forCellWithReuseIdentifier: cellId)
         calculatorCollectionView.backgroundColor = .clear
         calculatorCollectionView.contentInset = .init(top: 0, left: 14, bottom: 0, right: 14)
-        
         // 大元の背景色の変更
         view.backgroundColor = .black
     }
@@ -49,80 +53,92 @@ class ViewController: UIViewController {
         
         switch calculateStatus {
         case .none:
-            switch number {
-            case "0"..."9":
-                firstNumber += number
-                numberLabel.text = firstNumber
-                if firstNumber.hasPrefix("0") {
-                    firstNumber = ""                }
-            case ".":
-                if confirmIncludeDecimalPoint(numberString: firstNumber) {
-                    secondNumber += number
-                    numberLabel.text = secondNumber
-                }
-            case "+":
-                calculateStatus = .plus
-            case "-":
-                calculateStatus = .minus
-            case "*":
-                calculateStatus = .multiplication
-            case "÷":
-                calculateStatus = .division
-            case "C":
-                clear()
-            default:
-                break
-            }
+            handleFirstNumberSelected(number: number)
         case .plus, .minus, .multiplication, .division:
-            switch number {
-            case "0"..."9":
+            handleSecondNumberSelected(number: number)
+        }
+    }
+    
+    private func handleFirstNumberSelected(number: String) {
+        switch number {
+        case "0"..."9":
+            firstNumber += number
+            numberLabel.text = firstNumber
+            if firstNumber.hasPrefix("0") {
+                firstNumber = ""                }
+        case ".":
+            if confirmIncludeDecimalPoint(numberString: firstNumber) {
                 secondNumber += number
                 numberLabel.text = secondNumber
-                if secondNumber.hasPrefix("0") {
-                    secondNumber = ""
-                }
-            case ".":
-                if confirmIncludeDecimalPoint(numberString: secondNumber) {
-                    firstNumber += number
-                    numberLabel.text = firstNumber
-                }
-            case "=":
-                let firstNum = Double(firstNumber) ?? 0
-                let secondNum = Double(secondNumber) ?? 0
-                
-                var resultString: String?
-                switch calculateStatus {
-                case .plus:
-                    resultString = String(firstNum + secondNum)
-                case .minus:
-                    resultString = String(firstNum - secondNum)
-                case .multiplication:
-                    resultString = String(firstNum * secondNum)
-                case .division:
-                    resultString = String(firstNum / secondNum)
-                default:
-                    break
-                }
-                
-                if let result = resultString, result.hasSuffix(".0") {
-                    resultString = result.replacingOccurrences(of: ".0", with: "")
-                }
-                
-                numberLabel.text = resultString
-                firstNumber = ""
-                secondNumber = ""
-                
-                if let _firstNumber = resultString {
-                    firstNumber = _firstNumber
-                }
-                calculateStatus = .none
-                
-            case "C":
-                clear()
-            default:
-                break
             }
+        case "+":
+            calculateStatus = .plus
+        case "-":
+            calculateStatus = .minus
+        case "*":
+            calculateStatus = .multiplication
+        case "÷":
+            calculateStatus = .division
+        case "C":
+            clear()
+        default:
+            break
         }
+    }
+    
+    private func handleSecondNumberSelected(number: String) {
+        switch number {
+        case "0"..."9":
+            secondNumber += number
+            numberLabel.text = secondNumber
+            if secondNumber.hasPrefix("0") {
+                secondNumber = ""
+            }
+        case ".":
+            if confirmIncludeDecimalPoint(numberString: secondNumber) {
+                firstNumber += number
+                numberLabel.text = firstNumber
+            }
+        case "=":
+            calculateResultNumber()
+        case "C":
+            clear()
+        default:
+            break
+        }
+    }
+    
+    private func calculateResultNumber() {
+        let firstNum = Double(firstNumber) ?? 0
+        let secondNum = Double(secondNumber) ?? 0
+        
+        var resultString: String?
+        switch calculateStatus {
+        case .plus:
+            resultString = String(firstNum + secondNum)
+        case .minus:
+            resultString = String(firstNum - secondNum)
+        case .multiplication:
+            resultString = String(firstNum * secondNum)
+        case .division:
+            resultString = String(firstNum / secondNum)
+        default:
+            break
+        }
+        
+        if let result = resultString, result.hasSuffix(".0") {
+            resultString = result.replacingOccurrences(of: ".0", with: "")
+        }
+        
+        numberLabel.text = resultString
+        firstNumber = ""
+        secondNumber = ""
+
+        if let _firstNumber = resultString {
+            firstNumber = _firstNumber
+        }
+        calculateStatus = .none
+        
     }
     
     private func confirmIncludeDecimalPoint(numberString: String) -> Bool {
@@ -164,13 +180,10 @@ extension ViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
-
 }
 
 extension ViewController: UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 3
         return numbers.count
     }
 }
@@ -186,7 +199,6 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         var width: CGFloat = 0
         width = ((collectionView.frame.width - 10) - 14 * 5) / 4
         let height = width
-        
         if indexPath.section == 4 && indexPath.row == 0 {
             // 14はスペース分
             width = width * 2 + 14 + 17
@@ -200,40 +212,4 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-class CalculatorViewCell: UICollectionViewCell {
-    
-    override var isHighlighted: Bool {
-        didSet {
-            if isHighlighted {
-                self.numberLabel.alpha = 0.3
-            } else {
-                self.numberLabel.alpha = 1
-            }
-        }
-    }
-    
-    let numberLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .white
-        label.textAlignment = .center
-        label.text = "1"
-        label.font = .boldSystemFont(ofSize: 32)
-        label.clipsToBounds = true
-        label.backgroundColor = .orange
-        return label
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        addSubview(numberLabel)
-//        backgroundColor = .black
-        
-        // cellの大きさと同じ大きさに設定
-        numberLabel.frame.size = self.frame.size
-        numberLabel.layer.cornerRadius = self.frame.height / 2
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
+

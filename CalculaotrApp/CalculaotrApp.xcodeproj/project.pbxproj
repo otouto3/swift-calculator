@@ -15,6 +15,7 @@
 		7389ABE527080FC700DE29BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7389ABE327080FC700DE29BE /* LaunchScreen.storyboard */; };
 		7389ABF027080FC700DE29BE /* CalculaotrAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7389ABEF27080FC700DE29BE /* CalculaotrAppTests.swift */; };
 		7389ABFB27080FC700DE29BE /* CalculaotrAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7389ABFA27080FC700DE29BE /* CalculaotrAppUITests.swift */; };
+		73E5593C270C9ED3008592A6 /* CalculatorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E5593B270C9ED3008592A6 /* CalculatorViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		7389ABF627080FC700DE29BE /* CalculaotrAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculaotrAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7389ABFA27080FC700DE29BE /* CalculaotrAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculaotrAppUITests.swift; sourceTree = "<group>"; };
 		7389ABFC27080FC700DE29BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		73E5593B270C9ED3008592A6 /* CalculatorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				7389ABE127080FC700DE29BE /* Assets.xcassets */,
 				7389ABE327080FC700DE29BE /* LaunchScreen.storyboard */,
 				7389ABE627080FC700DE29BE /* Info.plist */,
+				73E5593B270C9ED3008592A6 /* CalculatorViewCell.swift */,
 			);
 			path = CalculaotrApp;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73E5593C270C9ED3008592A6 /* CalculatorViewCell.swift in Sources */,
 				7389ABDD27080FC500DE29BE /* ViewController.swift in Sources */,
 				7389ABD927080FC500DE29BE /* AppDelegate.swift in Sources */,
 				7389ABDB27080FC500DE29BE /* SceneDelegate.swift in Sources */,
